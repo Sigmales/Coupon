@@ -69,19 +69,26 @@ export default function App() {
     loadPredictions();
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session) {
-        loadUserData(session.user.id);
-      } else {
-        setUser(null);
-      }
-    });
+    if (supabase) {
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((_event: any, session: any) => {
+        if (session) {
+          loadUserData(session.user.id);
+        } else {
+          setUser(null);
+        }
+      });
 
-    return () => subscription.unsubscribe();
+      return () => subscription.unsubscribe();
+    }
   }, []);
 
   const checkUser = async () => {
     try {
+      if (!supabase) {
+        console.warn('Supabase non configuré');
+        setLoading(false);
+        return;
+      }
       const { data: { session } } = await supabase.auth.getSession();
       if (session?.user) {
         await loadUserData(session.user.id);
@@ -95,6 +102,7 @@ export default function App() {
 
   const loadUserData = async (userId: string) => {
     try {
+      if (!supabase) return;
       const { data, error } = await supabase
         .from('users')
         .select('*')
@@ -121,6 +129,7 @@ export default function App() {
 
   const loadMatches = async () => {
     try {
+      if (!supabase) return;
       const { data, error } = await supabase
         .from('matches')
         .select('*')
@@ -136,6 +145,7 @@ export default function App() {
 
   const loadPredictions = async () => {
     try {
+      if (!supabase) return;
       const { data, error } = await supabase
         .from('predictions')
         .select(`
@@ -154,6 +164,10 @@ export default function App() {
 
   const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!supabase) {
+      alert('Supabase n\'est pas configuré. Vérifiez vos variables d\'environnement.');
+      return;
+    }
     const formData = new FormData(e.currentTarget);
     const email = formData.get('email') as string;
     const password = formData.get('password') as string;
@@ -177,6 +191,10 @@ export default function App() {
 
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!supabase) {
+      alert('Supabase n\'est pas configuré. Vérifiez vos variables d\'environnement.');
+      return;
+    }
     const formData = new FormData(e.currentTarget);
     const email = formData.get('email') as string;
     const password = formData.get('password') as string;
@@ -207,6 +225,7 @@ export default function App() {
 
   const handleLogout = async () => {
     try {
+      if (!supabase) return;
       await supabase.auth.signOut();
       setUser(null);
       setShowAdmin(false);

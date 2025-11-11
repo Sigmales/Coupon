@@ -65,6 +65,24 @@ npm run dev
 
 L'application sera accessible sur `http://localhost:5173`
 
+## 🚀 Déploiement sur Vercel
+
+1. **Connecter votre repository GitHub à Vercel**
+
+2. **Configurer les variables d'environnement dans Vercel** :
+   - Allez dans Settings > Environment Variables
+   - Ajoutez :
+     - `VITE_SUPABASE_URL` = votre URL Supabase
+     - `VITE_SUPABASE_ANON_KEY` = votre clé anon Supabase
+     - `VITE_GROQ_API_KEY` = votre clé Groq (optionnel)
+
+3. **Déployer**
+   - Vercel détectera automatiquement Vite
+   - Le fichier `vercel.json` est déjà configuré
+   - Le build se fera automatiquement
+
+**Important**: Assurez-vous que toutes les variables d'environnement sont configurées dans Vercel, sinon vous aurez une page blanche.
+
 ## 📁 Structure du projet
 
 ```
@@ -74,7 +92,8 @@ coupon-app/
 │   │   ├── AdminPage.tsx
 │   │   ├── AuthModal.tsx
 │   │   ├── PredictionDetailModal.tsx
-│   │   └── VipRequestModal.tsx
+│   │   ├── VipRequestModal.tsx
+│   │   └── ErrorBoundary.tsx
 │   ├── lib/
 │   │   └── supabase.ts      # Configuration Supabase
 │   ├── services/
@@ -84,6 +103,7 @@ coupon-app/
 │   └── index.css            # Styles globaux
 ├── supabase-schema-complete.sql  # Schéma SQL complet
 ├── supabase-fix-migration.sql    # Script de migration
+├── vercel.json                   # Configuration Vercel
 └── package.json
 ```
 
@@ -110,6 +130,7 @@ UPDATE public.users SET is_admin = true WHERE email = 'votre@email.com';
 - Policies de sécurité configurées
 - Variables d'environnement pour les clés API
 - Authentification via Supabase Auth
+- ErrorBoundary pour gérer les erreurs React
 
 ## 📝 Scripts disponibles
 
@@ -117,6 +138,18 @@ UPDATE public.users SET is_admin = true WHERE email = 'votre@email.com';
 - `npm run build` - Build de production
 - `npm run preview` - Prévisualiser le build
 - `npm run lint` - Linter le code
+
+## 🐛 Résolution de problèmes
+
+### Page blanche sur Vercel
+1. Vérifiez que toutes les variables d'environnement sont configurées dans Vercel
+2. Vérifiez les logs de build dans Vercel
+3. Ouvrez la console du navigateur pour voir les erreurs
+4. Assurez-vous que le schéma SQL a été exécuté dans Supabase
+
+### Erreurs d'authentification
+- Vérifiez que `VITE_SUPABASE_URL` et `VITE_SUPABASE_ANON_KEY` sont corrects
+- Vérifiez que les policies RLS sont bien configurées
 
 ## 🤝 Contribution
 
@@ -133,4 +166,3 @@ Ce projet est sous licence MIT.
 ---
 
 ⭐ N'oubliez pas de mettre une étoile si ce projet vous a aidé !
-
