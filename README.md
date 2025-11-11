@@ -43,12 +43,14 @@ npm install
 cp .env.example .env
 ```
 
-Puis éditez `.env` et ajoutez vos clés Supabase :
+Puis éditez `.env` et ajoutez vos clés :
 ```env
 VITE_SUPABASE_URL=votre-url-supabase
 VITE_SUPABASE_ANON_KEY=votre-clé-anon
-VITE_GROQ_API_KEY=votre-clé-groq (optionnel)
+VITE_GROQ_API_KEY=votre-clé-groq (optionnel - pour les logos d'équipes)
 ```
+
+**Note**: La clé API Groq est optionnelle. L'application utilise par défaut une API gratuite (TheSportsDB) pour récupérer les logos d'équipes.
 
 4. **Configurer la base de données**
 - Ouvrez Supabase SQL Editor
