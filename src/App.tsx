@@ -185,7 +185,14 @@ export default function App() {
         setShowAuthModal(false);
       }
     } catch (error: any) {
-      alert('Erreur de connexion: ' + error.message);
+      let errorMessage = 'Erreur de connexion: ' + error.message;
+      
+      // Gestion spécifique de l'erreur de confirmation d'email
+      if (error.message?.includes('Email not confirmed') || error.message?.includes('email_not_confirmed')) {
+        errorMessage = 'Votre email n\'a pas été confirmé. Veuillez vérifier votre boîte mail et cliquer sur le lien de confirmation.';
+      }
+      
+      alert(errorMessage);
     }
   };
 
@@ -215,8 +222,13 @@ export default function App() {
 
       if (data.user) {
         // User will be created automatically by trigger
-        alert('Inscription réussie ! Vous pouvez maintenant vous connecter.');
-        setAuthMode('login');
+        if (data.user.email_confirmed_at) {
+          alert('Inscription réussie ! Vous pouvez maintenant vous connecter.');
+          setAuthMode('login');
+        } else {
+          alert('Inscription réussie ! Un email de confirmation a été envoyé. Veuillez vérifier votre boîte mail et cliquer sur le lien de confirmation avant de vous connecter.');
+          setAuthMode('login');
+        }
       }
     } catch (error: any) {
       alert('Erreur d\'inscription: ' + error.message);
