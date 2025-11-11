@@ -64,9 +64,23 @@ export default function App() {
 
   // Check auth state on mount
   useEffect(() => {
-    checkUser();
-    loadMatches();
-    loadPredictions();
+    const initializeApp = async () => {
+      try {
+        // Charger toutes les données en parallèle
+        await Promise.allSettled([
+          checkUser(),
+          loadMatches(),
+          loadPredictions()
+        ]);
+      } catch (error) {
+        console.error('Error initializing app:', error);
+      } finally {
+        // S'assurer que le loading est toujours mis à false
+        setLoading(false);
+      }
+    };
+
+    initializeApp();
 
     // Listen for auth changes
     if (supabase) {
@@ -86,7 +100,6 @@ export default function App() {
     try {
       if (!supabase) {
         console.warn('Supabase non configuré');
-        setLoading(false);
         return;
       }
       const { data: { session } } = await supabase.auth.getSession();
@@ -95,8 +108,6 @@ export default function App() {
       }
     } catch (error) {
       console.error('Error checking user:', error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -129,7 +140,10 @@ export default function App() {
 
   const loadMatches = async () => {
     try {
-      if (!supabase) return;
+      if (!supabase) {
+        console.warn('Supabase non configuré, impossible de charger les matchs');
+        return;
+      }
       // Charger uniquement les matchs à venir (match_date >= maintenant)
       const now = new Date().toISOString();
       const { data, error } = await supabase
@@ -139,16 +153,35 @@ export default function App() {
         .order('match_date', { ascending: true })
         .limit(20);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error loading matches:', error);
+        // Si l'erreur est liée à la requête .gte(), charger tous les matchs
+        if (error.message?.includes('gte') || error.message?.includes('match_date')) {
+          const { data: allMatches, error: allError } = await supabase
+            .from('matches')
+            .select('*')
+            .order('match_date', { ascending: true })
+            .limit(20);
+          if (!allError) {
+            setMatches(allMatches || []);
+          }
+        }
+        return;
+      }
       setMatches(data || []);
     } catch (error) {
       console.error('Error loading matches:', error);
+      // En cas d'erreur, initialiser avec un tableau vide pour éviter de bloquer l'app
+      setMatches([]);
     }
   };
 
   const loadPredictions = async () => {
     try {
-      if (!supabase) return;
+      if (!supabase) {
+        console.warn('Supabase non configuré, impossible de charger les pronostics');
+        return;
+      }
       const { data, error } = await supabase
         .from('predictions')
         .select(`
@@ -158,10 +191,24 @@ export default function App() {
         .order('created_at', { ascending: false })
         .limit(20);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error loading predictions:', error);
+        // En cas d'erreur de jointure, essayer sans la jointure
+        const { data: simpleData, error: simpleError } = await supabase
+          .from('predictions')
+          .select('*')
+          .order('created_at', { ascending: false })
+          .limit(20);
+        if (!simpleError) {
+          setPredictions(simpleData || []);
+        }
+        return;
+      }
       setPredictions(data || []);
     } catch (error) {
       console.error('Error loading predictions:', error);
+      // En cas d'erreur, initialiser avec un tableau vide pour éviter de bloquer l'app
+      setPredictions([]);
     }
   };
 
