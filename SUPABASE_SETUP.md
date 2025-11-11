@@ -10,8 +10,10 @@ Si vous rencontrez l'erreur "Email not confirmed" lors de la connexion, c'est pa
 2. Cliquez sur **Authentication** dans le menu de gauche
 3. Allez dans **Settings** (ou **Configuration**)
 4. Dans la section **Email Auth**, trouvez **"Enable email confirmations"**
-5. **Désactivez** cette option
+5. **Désactivez** cette option (toggle switch)
 6. Cliquez sur **Save**
+
+**Important** : Cette option se trouve dans **Authentication → Settings → Email Auth**, pas dans les templates d'email.
 
 Maintenant, les utilisateurs pourront se connecter immédiatement après l'inscription sans confirmer leur email.
 
@@ -49,9 +51,19 @@ Pour utiliser votre propre service email :
 Vous pouvez personnaliser les emails de confirmation :
 
 1. Allez dans **Authentication** → **Email Templates**
-2. Sélectionnez **Confirm signup**
-3. Personnalisez le sujet et le contenu
-4. Utilisez `{{ .ConfirmationURL }}` pour le lien de confirmation
+2. Sélectionnez **Confirm signup** (onglet en haut)
+3. Personnalisez le **Subject** (sujet de l'email)
+4. Personnalisez le **Body** (corps de l'email) dans l'onglet "Source"
+5. Utilisez `{{ .ConfirmationURL }}` pour le lien de confirmation
+6. Cliquez sur **Save** pour enregistrer
+
+**Exemple de template personnalisé** :
+```html
+<h2>Bienvenue sur COUPON !</h2>
+<p>Merci de vous être inscrit. Cliquez sur le lien ci-dessous pour confirmer votre compte :</p>
+<p><a href="{{ .ConfirmationURL }}" style="background: #0284c7; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Confirmer mon email</a></p>
+<p>Si vous n'avez pas créé de compte, ignorez cet email.</p>
+```
 
 ## 🚀 Pour la production
 
