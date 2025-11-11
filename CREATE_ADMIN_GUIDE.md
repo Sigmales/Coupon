@@ -1,6 +1,14 @@
 # 👨‍💼 Guide : Créer un compte Administrateur
 
-## Méthode 1 : Via l'interface Supabase (Recommandé)
+## 📋 Informations du compte admin par défaut
+
+- **Email**: `yantoubri@gmail.com`
+- **Mot de passe par défaut**: `AdminCoupon2024!`
+- **Statut**: Administrateur (après promotion)
+
+⚠️ **IMPORTANT**: Changez ce mot de passe après la première connexion !
+
+## 🚀 Méthode rapide : Via l'interface Supabase
 
 ### Étape 1 : Créer l'utilisateur
 
@@ -11,8 +19,8 @@
 5. Sélectionnez **"Create new user"**
 6. Remplissez le formulaire :
    - **Email**: `yantoubri@gmail.com`
-   - **Password**: Choisissez un mot de passe sécurisé (ex: `Admin123!`)
-   - **Auto Confirm User**: ✅ **Cochez cette case** (important pour éviter la confirmation d'email)
+   - **Password**: `AdminCoupon2024!`
+   - **Auto Confirm User**: ✅ **Cochez cette case** (très important !)
 7. Cliquez sur **"Create user"**
 
 ### Étape 2 : Promouvoir en administrateur
@@ -48,28 +56,45 @@ WHERE email = 'yantoubri@gmail.com';
 
 Vous devriez voir `is_admin = true`
 
-## Méthode 2 : Via l'application (Alternative)
+## 🔐 Connexion
 
-1. Inscrivez-vous dans l'application avec `yantoubri@gmail.com` et votre mot de passe
-2. Ensuite, exécutez la requête SQL ci-dessus pour promouvoir en admin
-
-## 🔐 Informations de connexion
-
-Une fois créé, vous pourrez vous connecter avec :
+Une fois créé, connectez-vous avec :
 - **Email**: `yantoubri@gmail.com`
-- **Mot de passe**: Le mot de passe que vous avez défini
+- **Mot de passe**: `AdminCoupon2024!`
 
-## ✅ Vérification
+## ✅ Vérification après connexion
 
 Après connexion, vous devriez voir :
-- Le bouton **"Admin"** dans le header
-- Accès au Dashboard Administrateur
-- Toutes les fonctionnalités admin disponibles
+- ✅ Le bouton **"Admin"** dans le header (en haut à droite)
+- ✅ Accès au Dashboard Administrateur
+- ✅ Toutes les fonctionnalités admin disponibles
 
-## 🔒 Sécurité
+## 🔒 Sécurité - Changez le mot de passe !
 
-- Le mot de passe est automatiquement hashé par Supabase
-- Ne partagez jamais votre mot de passe
-- Changez-le régulièrement
-- Utilisez un mot de passe fort (minimum 8 caractères, majuscules, minuscules, chiffres, symboles)
+**IMPORTANT**: Après votre première connexion, changez immédiatement le mot de passe :
 
+1. Connectez-vous avec le mot de passe par défaut
+2. Allez dans votre profil (si vous ajoutez cette fonctionnalité)
+3. Ou utilisez la fonction "Reset password" de Supabase
+
+## 📝 Alternative : Créer via l'application
+
+Si vous préférez :
+
+1. Inscrivez-vous dans l'application avec `yantoubri@gmail.com` et le mot de passe `AdminCoupon2024!`
+2. Ensuite, exécutez la requête SQL ci-dessus pour promouvoir en admin
+
+## 🛠️ Dépannage
+
+### L'utilisateur n'existe pas encore
+- Créez-le d'abord via l'interface Supabase (Étape 1)
+- Puis exécutez la requête UPDATE
+
+### Le bouton Admin n'apparaît pas
+- Vérifiez que `is_admin = true` dans la base de données
+- Déconnectez-vous et reconnectez-vous
+- Videz le cache du navigateur
+
+### Erreur "Email not confirmed"
+- Assurez-vous d'avoir coché "Auto Confirm User" lors de la création
+- Ou désactivez la confirmation d'email dans Authentication → Settings

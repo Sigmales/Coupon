@@ -1,30 +1,36 @@
 -- =============================================
 -- SCRIPT POUR CRÉER UN COMPTE ADMINISTRATEUR
 -- =============================================
--- Ce script crée un utilisateur admin directement dans Supabase
--- 
--- IMPORTANT: Exécutez ce script dans Supabase SQL Editor
--- 
--- Remplacez 'VotreMotDePasse123!' par le mot de passe souhaité
--- Le mot de passe sera automatiquement hashé par Supabase
+-- Ce script crée automatiquement un utilisateur admin
+-- Email: yantoubri@gmail.com
+-- Mot de passe par défaut: AdminCoupon2024!
 
--- Méthode 1: Créer l'utilisateur via l'extension auth (Recommandé)
--- Note: Cette méthode nécessite d'utiliser l'API Supabase ou l'interface
+-- IMPORTANT: 
+-- Supabase ne permet pas de créer directement un utilisateur avec mot de passe via SQL
+-- car les mots de passe doivent être hashés par le système d'authentification.
+-- 
+-- Vous devez créer l'utilisateur via l'interface Supabase, puis exécuter la partie UPDATE ci-dessous.
 
--- Méthode 2: Créer via l'interface Supabase (Plus simple)
+-- =============================================
+-- ÉTAPE 1: Créer l'utilisateur via l'interface Supabase
+-- =============================================
 -- 1. Allez dans Authentication → Users
 -- 2. Cliquez sur "Add user" → "Create new user"
 -- 3. Email: yantoubri@gmail.com
--- 4. Password: votre mot de passe
--- 5. Auto Confirm User: OUI (pour éviter la confirmation d'email)
+-- 4. Password: AdminCoupon2024!
+-- 5. Auto Confirm User: ✅ OUI
 -- 6. Cliquez sur "Create user"
--- 
--- Ensuite, exécutez cette requête pour le promouvoir en admin:
+
+-- =============================================
+-- ÉTAPE 2: Promouvoir en administrateur (Exécutez cette partie)
+-- =============================================
+
+-- Promouvoir l'utilisateur en admin
 UPDATE public.users 
 SET is_admin = true 
 WHERE email = 'yantoubri@gmail.com';
 
--- Vérifier que l'utilisateur a été créé et promu admin
+-- Vérifier que l'utilisateur existe et est admin
 SELECT 
   id, 
   email, 
@@ -36,11 +42,15 @@ FROM public.users
 WHERE email = 'yantoubri@gmail.com';
 
 -- =============================================
--- ALTERNATIVE: Créer directement via SQL (Avancé)
+-- INFORMATIONS DE CONNEXION
 -- =============================================
--- ATTENTION: Cette méthode nécessite des permissions spéciales
--- et le hashage du mot de passe avec bcrypt
+-- Email: yantoubri@gmail.com
+-- Mot de passe: AdminCoupon2024!
+-- 
+-- ⚠️ IMPORTANT: Changez ce mot de passe après la première connexion !
 
--- D'abord, créez l'utilisateur via l'interface Supabase ou l'API
--- Puis exécutez seulement la partie UPDATE ci-dessus
-
+-- =============================================
+-- ALTERNATIVE: Créer via API (si vous avez accès)
+-- =============================================
+-- Vous pouvez aussi créer l'utilisateur via l'API Supabase en utilisant
+-- la fonction auth.admin.createUser() dans une Edge Function ou via HTTP
