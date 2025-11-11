@@ -130,11 +130,14 @@ export default function App() {
   const loadMatches = async () => {
     try {
       if (!supabase) return;
+      // Charger uniquement les matchs à venir (match_date >= maintenant)
+      const now = new Date().toISOString();
       const { data, error } = await supabase
         .from('matches')
         .select('*')
+        .gte('match_date', now)
         .order('match_date', { ascending: true })
-        .limit(10);
+        .limit(20);
 
       if (error) throw error;
       setMatches(data || []);
@@ -239,8 +242,8 @@ export default function App() {
     try {
       if (!supabase) return;
       await supabase.auth.signOut();
-      setUser(null);
-      setShowAdmin(false);
+    setUser(null);
+    setShowAdmin(false);
     } catch (error) {
       console.error('Error logging out:', error);
     }
@@ -397,6 +400,67 @@ export default function App() {
               >
                 Devenir VIP
               </button>
+            </div>
+          </div>
+        )}
+
+        {/* Matches Section */}
+        {matches.length > 0 && (
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+              <Trophy className="text-blue-600" />
+              Matchs à venir
+            </h2>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {matches.map((match) => (
+                <div
+                  key={match.id}
+                  className="bg-white rounded-xl shadow-lg hover:shadow-xl transition p-6"
+                >
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-sm text-gray-600 font-semibold">{match.league || 'Match'}</span>
+                    <span className="text-sm text-gray-600">
+                      {new Date(match.match_date).toLocaleDateString('fr-FR', {
+                        day: 'numeric',
+                        month: 'short',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div className="text-center flex-1">
+                      {match.team1_logo && (
+                        <img 
+                          src={match.team1_logo} 
+                          alt={match.team1} 
+                          className="w-12 h-12 mx-auto mb-2 object-contain" 
+                          onError={(e) => {
+                            // Fallback si le logo ne charge pas
+                            (e.target as HTMLImageElement).style.display = 'none';
+                          }}
+                        />
+                      )}
+                      <div className="font-semibold text-sm">{match.team1}</div>
+                    </div>
+                    <div className="text-gray-400 px-3 font-bold">VS</div>
+                    <div className="text-center flex-1">
+                      {match.team2_logo && (
+                        <img 
+                          src={match.team2_logo} 
+                          alt={match.team2} 
+                          className="w-12 h-12 mx-auto mb-2 object-contain" 
+                          onError={(e) => {
+                            // Fallback si le logo ne charge pas
+                            (e.target as HTMLImageElement).style.display = 'none';
+                          }}
+                        />
+                      )}
+                      <div className="font-semibold text-sm">{match.team2}</div>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         )}

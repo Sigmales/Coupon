@@ -66,13 +66,14 @@ export default function AdminPage({ currentUser: _currentUser }: Props) {
   const loadData = async () => {
     setLoading(true);
     try {
-      if (activeTab === 'matches') {
-        const { data } = await supabase
-          .from('matches')
-          .select('*')
-          .order('match_date', { ascending: false });
-        setMatches(data || []);
-      } else if (activeTab === 'predictions') {
+      // Toujours charger les matchs car ils sont nécessaires pour ajouter des pronostics
+      const { data: matchesData } = await supabase
+        .from('matches')
+        .select('*')
+        .order('match_date', { ascending: false });
+      setMatches(matchesData || []);
+
+      if (activeTab === 'predictions') {
         const { data } = await supabase
           .from('predictions')
           .select('*, match:matches(*)')
@@ -85,6 +86,7 @@ export default function AdminPage({ currentUser: _currentUser }: Props) {
           .order('created_at', { ascending: false });
         setVipRequests(data || []);
       }
+      // Note: Les matchs sont déjà chargés au-dessus pour tous les onglets
     } catch (error) {
       console.error('Error loading data:', error);
     } finally {
